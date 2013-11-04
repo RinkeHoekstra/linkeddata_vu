@@ -105,7 +105,7 @@
 				});
 			}).fail(function(){
 				console.log("Could not connect to datahub.io");
-				$('#datasets').append('<div class="alert alert-danger">Could not connect to datahub.io</div>');
+				$('#datasets').html('<div class="alert alert-danger">Could not connect to datahub.io</div>');
 			});
 		});
 	</script>
