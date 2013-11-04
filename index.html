@@ -6,59 +6,10 @@
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/showdown.js"></script>
-	<script type="text/javascript">
-
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-2853717-8']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
 	
-	<script>
-		$(function(){
-			$.get('http://datahub.io/api/3/action/group_show?id=vua', function(data){
-				var converter = new Showdown.converter();
-				
-				$.each(data.result.packages, function(k,entry){
-					if (entry.type == 'dataset'){
-						var div = $('<div></div>');
-						var title = $('<h3></h3>');
-						title.html(entry.title)
-						var description = $('<blockquote></blockquote>');
-						var html = converter.makeHtml(entry.notes);
-						description.html(html);
-						
-						div.append(title);
-						div.append(description);
-						$('#datasets').append(div);
-						
-						var well = $('<div></div>');
-						well.addClass('well');
-						
-						var table = $('<table></table>');
-						table.append('<tr><th>Author(s): </th><td>'+ entry.author +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
-						table.append('<tr><th>Maintainer(s): </th><td>'+ entry.maintainer +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
-						table.append('<tr><th>License: </th><td>' + entry.license_id + '</td></tr>');
-						table.append('<tr><th>URL: </th><td><a href="'+ entry.url +'">'+ entry.url +'</a></td></tr>');
-						table.append('<tr><th>CKAN: </th><td><a href="http://datahub.io/' + entry.type + '/'+ entry.name +'">http://datahub.io/' + entry.type + '/'+ entry.name +'</a></td></tr>');
-						
-						well.append(table);
-						div.append(well);
-						
-					}
-				});
-			});
-		});
-	</script>
 	
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/bootstrap.theme.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	
 	<style>
 		th { vertical-align: top; 
@@ -80,9 +31,10 @@
 			<p>While you are around, why not have a look at <a href="wod_analysis/">our work on the analysis of the Web of Data</a>?</p>
 		</div>
 		<div class="row">
-			<div class="col-md-6" id="datasets">
+			<div class="col-md-6">
 				<h2>Datasets</h2>
-				
+				<div id="datasets">
+				</div>
 			</div>
 			<div class="col-md-6">
 				<h2>Services</h2>
@@ -101,5 +53,61 @@
 
 		
 	</div>
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-2853717-8']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+	
+	<script>
+		$(function(){
+			$('#datasets').html('<div class="alert alert-info">Connecting to datahub.io</div>');
+			
+			$.get('http://datahub.io/api/3/action/group_show?id=vua', function(data){
+				var converter = new Showdown.converter();
+				$('#datasets').empty();
+				$.each(data.result.packages, function(k,entry){
+					if (entry.type == 'dataset'){
+						var div = $('<div></div>');
+						var title = $('<h3></h3>');
+						title.html(entry.title)
+						var description = $('<blockquote></blockquote>');
+						var html = converter.makeHtml(entry.notes);
+						description.html(html);
+						
+						div.append(title);
+						div.append(description);
+						
+						
+						var well = $('<div></div>');
+						well.addClass('well');
+						
+						var table = $('<table></table>');
+						table.append('<tr><th>Author(s): </th><td>'+ entry.author +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
+						table.append('<tr><th>Maintainer(s): </th><td>'+ entry.maintainer +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
+						table.append('<tr><th>License: </th><td>' + entry.license_id + '</td></tr>');
+						table.append('<tr><th>URL: </th><td><a href="'+ entry.url +'">'+ entry.url +'</a></td></tr>');
+						table.append('<tr><th>CKAN: </th><td><a href="http://datahub.io/' + entry.type + '/'+ entry.name +'">http://datahub.io/' + entry.type + '/'+ entry.name +'</a></td></tr>');
+						
+						well.append(table);
+						div.append(well);
+						
+						$('#datasets').append(div);
+					}
+				});
+			}).fail(function(){
+				console.log("Could not connect to datahub.io");
+				$('#datasets').append('<div class="alert alert-danger">Could not connect to datahub.io</div>');
+			});
+		});
+	</script>
 </body>
 </html>
