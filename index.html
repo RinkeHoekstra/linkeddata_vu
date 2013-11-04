@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/showdown.js"></script>
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-2853717-8']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+	
+	<script>
+		$(function(){
+			$.get('http://datahub.io/api/3/action/group_show?id=vua', function(data){
+				var converter = new Showdown.converter();
+				
+				$.each(data.result.packages, function(k,entry){
+					if (entry.type == 'dataset'){
+						var div = $('<div></div>');
+						var title = $('<h3></h3>');
+						title.html(entry.title)
+						var description = $('<blockquote></blockquote>');
+						var html = converter.makeHtml(entry.notes);
+						description.html(html);
+						
+						div.append(title);
+						div.append(description);
+						$('#datasets').append(div);
+						
+						var well = $('<div></div>');
+						well.addClass('well');
+						
+						var table = $('<table></table>');
+						table.append('<tr><th>Author(s): </th><td>'+ entry.author +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
+						table.append('<tr><th>Maintainer(s): </th><td>'+ entry.maintainer +' (<a href="mailto:'+ entry.author_email +'">email</a>)</td></tr>');
+						table.append('<tr><th>License: </th><td>' + entry.license_id + '</td></tr>');
+						table.append('<tr><th>URL: </th><td><a href="'+ entry.url +'">'+ entry.url +'</a></td></tr>');
+						table.append('<tr><th>CKAN: </th><td><a href="http://datahub.io/' + entry.type + '/'+ entry.name +'">http://datahub.io/' + entry.type + '/'+ entry.name +'</a></td></tr>');
+						
+						well.append(table);
+						div.append(well);
+						
+					}
+				});
+			});
+		});
+	</script>
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap.theme.min.css">
+	
+	<style>
+		th { vertical-align: top; 
+			width: 150px;
+		}
+		
+	</style>
+	<title>Linked Data @ VU</title>
+
+</head>
+<body>
+	
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Linked Data @ VU</h1>
+			<p>Welcome to linkeddata.few.vu.nl. This page lists a number of linked open datasets and related services hosted by the <a href="http://semanticweb.cs.vu.nl/">Semantic Web groups</a> of VU University Amsterdam</p>
+		</div>
+		<div class="alert-message block-message info">
+			<p>While you are around, why not have a look at <a href="wod_analysis/">our work on the analysis of the Web of Data</a>?</p>
+		</div>
+		<div class="row">
+			<div class="col-md-6" id="datasets">
+				<h2>Datasets</h2>
+				
+			</div>
+			<div class="col-md-6">
+				<h2>Services</h2>
+				<h3><a href="googleart/">GoogleArt Wrapper</a></h3>
+				<p> - also referenced on <a href="http://ckan.net/package/googleart-wrapper">CKAN</a></p>
+				<h3><a href="eventseer">EventSeer Wrapper</a></h3>
+				<p>This wrapper generates Linked Data versions of the data present on <a href="http://www.eventseer.net">Eventseer.net</a></p>
+			</div>
+			<div class="col-md-6">
+				<h2>Contributors</h2>
+				<p><a class="btn btn-default" style="width: 85%; text-align: center;" href="http://www.krr.cs.vu.nl">Knowledge Representation &amp; Reasoning Group</a></p>
+				<p><a class="btn btn-default" style="width: 85%; text-align: center;" href="http://wm.cs.vu.nl">Web &amp; Media Group</a></p>
+				</ul>
+			</div>
+		</div>
+
+		
+	</div>
+</body>
+</html>
